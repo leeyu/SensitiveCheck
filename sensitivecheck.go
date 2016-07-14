@@ -6,6 +6,8 @@ import(
 "os"
 "strings"
 "net/http"
+"encoding/json"
+"strconv"
 /*
 "bytes"
 */
@@ -17,6 +19,18 @@ type node struct{
     sons map[rune] *node
     count int
     }
+
+type resp struct{
+    Errno int
+    Errmsg string
+    Data string
+    }
+
+type ColorGroup struct {
+    ID     int
+    Name   string
+    Colors []string
+}
 
 var root *node
 
@@ -30,7 +44,27 @@ func (root *node) Scheck(w http.ResponseWriter, r *http.Request) {
 
     cnt := root.Query(content)
 
-    fmt.Fprintf(w, "Catch: %s", cnt)
+    res := resp{
+        Errno: 0,
+        Errmsg: "ok",
+        Data: strconv.Itoa(cnt),
+        }
+
+    ret,err := json.Marshal(res)
+    if err != nil {
+        res := resp{
+            Errno: -1,
+            Errmsg: "errno happened",
+            Data: "errno happened",
+            }
+
+        ret,err = json.Marshal(res)
+    }
+
+
+//    fmt.Printf("this is :%s", string(ret), res.errmsg, res.errno)
+//    fmt.Fprintf(w, "Catch: %s", cnt)
+    fmt.Fprintf(w, "%s", ret)
 }
 
 
