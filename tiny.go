@@ -39,5 +39,6 @@ func Newhttpframe() *TinyMux {
 func (t *TinyMux) FunctionNotFount(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("No Action Has Found")
     w.WriteHeader(404)
-    w.Write([]byte("Nothing to see here"))
+    err_str := "{\"Errno\":-2,\"Errmsg\":\"error path\",\"Data\":\"0\"}"
+    w.Write([]byte(err_str))
 }

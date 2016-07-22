@@ -34,6 +34,12 @@ type ColorGroup struct {
 
 var root *node
 
+var errres = resp{
+    Errno: -1,
+    Errmsg: "errno happened",
+    Data: "0",
+    }
+
 func (root *node) Scheck(w http.ResponseWriter, r *http.Request) {
     r.ParseForm()
     ct := r.Form["ct"]
@@ -41,6 +47,12 @@ func (root *node) Scheck(w http.ResponseWriter, r *http.Request) {
     //    blacklist.GetRoot()
     //    black_root := blacklist.GetRoot()
     content := ct[0]
+
+    if "" == content {
+        ret := echojson(errres)
+        fmt.Fprintf(w, "%s", ret)
+        return
+        }
 
     cnt := root.Query(content)
 
@@ -50,24 +62,21 @@ func (root *node) Scheck(w http.ResponseWriter, r *http.Request) {
         Data: strconv.Itoa(cnt),
         }
 
-    ret,err := json.Marshal(res)
-    if err != nil {
-        res := resp{
-            Errno: -1,
-            Errmsg: "errno happened",
-            Data: "errno happened",
-            }
-
-        ret,err = json.Marshal(res)
-    }
-
-
+    ret := echojson(res)
+    fmt.Fprintf(w, "%s", ret)
 //    fmt.Printf("this is :%s", string(ret), res.errmsg, res.errno)
 //    fmt.Fprintf(w, "Catch: %s", cnt)
-    fmt.Fprintf(w, "%s", ret)
 }
 
 
+func echojson(res resp) []byte {
+    ret,err := json.Marshal(res)
+    if err != nil {
+        ret,err = json.Marshal(errres)
+    }
+
+    return ret
+}
 
 
 //建立tries树
