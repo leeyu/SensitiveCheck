@@ -9,8 +9,9 @@ type TinyMux struct{
     hpatt map[string] http.HandlerFunc
 }
 
+
 func (t *TinyMux) Listen(port string) {
-    fmt.Printf("Listening: %s\n", port[1:])
+    print("Listening: %s\n", port[1:])
     http.ListenAndServe(port, t)
 }
 
@@ -26,6 +27,8 @@ func (t *TinyMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     if(0 == proced) {
         t.FunctionNotFount(w, r)
     }
+
+    cLog.Notice(r.RemoteAddr+"\t"+r.RequestURI)
 }
 
 func (t *TinyMux)Add(patt string, handler http.HandlerFunc) {
@@ -33,6 +36,7 @@ func (t *TinyMux)Add(patt string, handler http.HandlerFunc) {
 }
 
 func Newhttpframe() *TinyMux {
+    cLog.Notice("this is in http framwork")
     return &TinyMux{make(map[string] http.HandlerFunc)}
 }
 
