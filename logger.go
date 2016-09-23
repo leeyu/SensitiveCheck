@@ -6,14 +6,30 @@ import (
         "fmt"
        )
 
+const (
+    LevelTrace = iota
+    LevelDebug
+    LevelInfo
+    LevelWarning
+    LevelNotice
+    LevelError
+    LevelCritical
+)
+
+
 type Clog struct {
     flog *log.Logger
+    level int
     }
 
 var cLog *Clog
 var log_root = "/home/q/logs/scheck/"
 
-func Newlog(name string) *Clog {
+func (l *Clog) SetLevel(lev int) {
+    l.level = lev
+}
+
+func Newlog(name string, lev int) *Clog {
     if("" == name) {
         name = "notice.log"
         }
@@ -26,18 +42,25 @@ func Newlog(name string) *Clog {
 
     cLog = &Clog{}
     cLog.flog = log.New(logFile, "logger: ", log.Lshortfile|log.LstdFlags)
+
+    cLog.SetLevel(lev)
+
     return cLog
 }
 
 
 func (l *Clog) Notice(str string) {
-    l.flog.SetPrefix("[Info]")
-    l.flog.Print(str)
+    if LevelNotice >= l.level {
+        l.flog.SetPrefix("[Info]")
+        l.flog.Print(str)
+    }
 }
 
 func (l *Clog) Fatalerr(str string) {
-    l.flog.SetPrefix("[Fatal]")
-    l.flog.Fatal(str)
+    if LevelNotice >= l.level {
+        l.flog.SetPrefix("[Fatal]")
+        l.flog.Fatal(str)
+    }
 }
 /*
 
