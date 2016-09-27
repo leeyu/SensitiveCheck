@@ -44,9 +44,16 @@ func (root *node) Scheck(w http.ResponseWriter, r *http.Request) {
     r.ParseForm()
     ct := r.Form["ct"]
 
+    if nil == ct {
+        ret := echojson(errres)
+        fmt.Fprintf(w, "%s", ret)
+        return
+        }
+
     //    blacklist.GetRoot()
     //    black_root := blacklist.GetRoot()
     content := ct[0]
+    cLog.Notice("in scheck" + ct[0])
 
     if "" == content {
         ret := echojson(errres)
