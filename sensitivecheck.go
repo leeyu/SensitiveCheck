@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
+	//	"strconv"
 	"strings"
 	/*
 	   "bytes"
@@ -227,7 +227,7 @@ func (Root *node) Query(str string) string {
 	var strl []string
 	if len(res) > 0 {
 		for _, word := range res {
-			strl = append(strl, strings.Trim(strconv.QuoteToASCII(string(word)), "\""))
+			strl = append(strl, string(word))
 		}
 		restp, err := json.Marshal(strl)
 		if err != nil {
